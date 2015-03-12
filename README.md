@@ -1,2 +1,2 @@
-# utn
-tiny util library for nodejs &amp; browser
+# tfu
+tiny function util library for nodejs &amp; browser
