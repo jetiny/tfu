@@ -1,0 +1,11 @@
+{
+  "name": "tfu",
+  "version": "1.0.0",
+  "description": "tiny function util library for nodejs & browser ",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "jetiny<jetiny8@gmail.com>",
+  "license": "MIT"
+}
