@@ -1,4 +1,4 @@
-module.exports = function (context, _done){
+module.exports.queue = function (context, _done){
     context = context || null;
 	var Q = function (err){
 			if (!err){
