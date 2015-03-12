@@ -1,8 +1,22 @@
 {
   "name": "tfu",
   "version": "1.0.0",
-  "description": "tiny function util library for nodejs & browser ",
+  "description": "tiny function utils library for node & browser ",
   "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/jetiny/tfu"
+  },
+  "keywords": [
+	"tiny",
+    "function",
+    "utils",
+    "utility",
+    "underscore",
+    "jquery",
+	"node",
+    "browser"
+  ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
