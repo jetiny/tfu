@@ -1,6 +1,6 @@
 {
   "name": "tfu",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "tiny function utils library for node & browser ",
   "main": "index.js",
   "repository": {
