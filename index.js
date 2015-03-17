@@ -1,10 +1,11 @@
-var _ = require('./extend')
+var _ = require('./extend') //type
 
-module.exports = _.extend(_ ,
-	require('./base'),
-	require('./type'),
-	require('./each'),
-	require('./queue'),
-	require('./inherits'),
-	require('./hook')
+_.extend(module.exports ,
+	require('./base'),			//single
+	require('./type'),			//single
+	require('./each'),			//single
+	require('./queue'),			//single
+	require('./inherits'),		//single
+	require('./route'),			//single
+	require('./hook')			//require type
 );

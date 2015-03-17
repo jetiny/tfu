@@ -1,5 +1,5 @@
 var expect = require('expect.js');
-var _ = require('../../');
+var _ = require('../../base');
 
 describe('base', function () {
     
