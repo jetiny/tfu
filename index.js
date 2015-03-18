@@ -1,4 +1,4 @@
-var _ = require('./extend') //type
+var _ = require('./extend') //require type
 
 _.extend(module.exports ,
 	require('./base'),			//single
@@ -7,5 +7,6 @@ _.extend(module.exports ,
 	require('./queue'),			//single
 	require('./inherits'),		//single
 	require('./route'),			//single
-	require('./hook')			//require type
+    require('./event'),			//single
+	require('./hook')			//single
 );
