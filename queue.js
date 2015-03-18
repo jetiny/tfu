@@ -11,7 +11,7 @@ module.exports.queue = function (context, _done){
 			}
 			return _done.apply(context, arguments);
 		},
-		_q = Q._queue = [];
+		_q = Q._queues = [];
     Q.push = Q.next = function(){
         _q.push.apply(_q, arguments);
         return Q;
@@ -29,11 +29,11 @@ module.exports.queue = function (context, _done){
         return Q;
     }
     Q.append = function(that){
-        _q.push.apply(_q, that._queue);
+        _q.push.apply(_q, that._queues);
         return Q;
     }
     Q.prepend = function(that){
-        _q.unshift.apply(_q, that._queue);
+        _q.unshift.apply(_q, that._queues);
         return Q;
     }
     Q.done = function(func){

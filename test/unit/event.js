@@ -5,7 +5,7 @@ describe('event', function () {
     
     it('event.on', function(){
         var evt = new _.Event;
-        console.log(evt instanceof _.Event);
+        
         evt.on('test', function(arg1, arg2){
             expect(arg1).to.be(1);
             arg2.val++;
