@@ -1,6 +1,5 @@
 var _ = require('./type'),
-    _each = require('./each'),
-    ;
+    _each = require('./each');
 
 //jsuri https://code.google.com/r/jonhwendell-jsuri/
 
@@ -10,48 +9,14 @@ var REKeys = ["source", "protocol", "authority", "userInfo", "user", "password",
     ,_encode = encodeURIComponent
     ;
 
-function buildQuery( prefix, obj, add, _name) {
-    if ( _.isArray( obj ) ) {// Serialize array item.
-        _each( obj, function(i, v) {
-            if (/\[\]$/.test( prefix ) ) {// scalar item
-                add( prefix, v );
-            } else { // Item is non-scalar (array or object), encode its numeric index.
-                buildQuery( prefix + "[" + ( _.isObject(v) ? i : "" ) + "]", v, add );
-            }
-        });
-    } else if ( _.isObject( obj )) {
-        for ( _name in obj ) {
-            buildQuery( prefix + "[" + _name + "]", obj[ _name ], add );
-        }
-    } else {// scalar item
-        add( prefix, obj );
-    }
-}
-
-function addQuery(query, name, value) {
-    name = name.replace(/\+/g, ' ');
-    if (value == null) {// same as undefined
-        delete query[name];
-    } else {
-        if (_.isString(value))
-            value = value.replace(/\+/g, ' ')
-        query[name] = value;
-    }
-}
-
 function parseUrl(str) {
-    var _uri = {} ,
+    var _uri = {},
         _m = URL_RE.exec(str || ''),
-        _i = REKeys.length
-    ;
+        _i = REKeys.length;
     while (_i--) {
         _uri[REKeys[_i]] = _m[_i] || "";
     }
     return _uri;
-}
-
-function _isset(s){
-    return (s != null && s != '');
 }
 
 function toUrl(uri) {
@@ -101,14 +66,47 @@ function toUrl(uri) {
     return _str;
 }
 
+function _isset(s){
+    return (s != null && s != '');
+}
+
+function buildQuery( key, obj, add, _name) {
+    if ( _.isArray( obj ) ) {// Serialize array item.
+        _each( obj, function( i, v ) {
+            if (/\[\]$/.test( key ) ) {// scalar item
+                add( key, v );
+            } else { // Item is non-scalar (array or object), encode its numeric index.
+                buildQuery( key + "[" + ( _.isObject(v) ? i : "" ) + "]", v, add );
+            }
+        });
+    } else if ( _.isObject( obj )) {
+        for ( _name in obj ) {
+            buildQuery( key + "[" + _name + "]", obj[ _name ], add );
+        }
+    } else {// scalar item
+        add( key, obj );
+    }
+}
+
+function addQuery(query, name, value) {
+    name = name.replace(/\+/g, ' ');
+    if (value == null) {// same as undefined
+        delete query[name];
+    } else {
+        if (_.isString(value))
+            value = value.replace(/\+/g, ' ')
+        query[name] = value;
+    }
+}
+
 //parseQuery # http://stackoverflow.com/questions/1131630/the-param-inverse-function-in-javascript-jquery
 function parseQuery(str) { // a[b]=1&a[c]=2&d[]=3&d[]=4&d[2][e]=5 <=> { a: { b: 1, c: 2 }, d: [ 3, 4, { e: 5 } ] }
     var _querys = {};
     decodeURIComponent(str || '')
-        //.replace(/\+/g, ' ')
+        .replace(/\+/g, ' ')
         // (optional no-capturing & )(key)=(value)
         .replace(/(?:^|&)([^&=]*)=?([^&]*)/g, function ($0, _name, _value) {
-            console.log(arguments)
+            
             if (_name) {
                 var _path, _acc, _nextAcc, _ref;
                 (_path = []).unshift(_name = _name.replace(/\[([^\]]*)\]/g, function($0, _k) {
@@ -132,23 +130,25 @@ function parseQuery(str) { // a[b]=1&a[c]=2&d[]=3&d[]=4&d[2][e]=5 <=> { a: { b: 
 
 //toQuery # http://api.jquery.com/jQuery.param
 function toQuery(query) {
-    var _str = [],
-        _add = function( key, value ) {
-            _str.push(_encode( key ) + "=" + _encode( value || "" ));
-        }
+    var _add = function( key, value ) {
+            // If value is a function, invoke it and return its value
+            value = _.isFunction( value ) ? value() : ( value == null ? "" : value );
+            _str[ _str.length ] = _encode( key ) + "=" + _encode( value );
+        },
+        _str = [];
     _each(query || {},function(id, it){
         buildQuery(id, it, _add)
     });
-    return _str.join( "&" ).replace(/%20/g, '+');
+    return _str.join( "&" ).replace(/%20/g,'+');
 }
 
 function replaceQuery(url, name, value) {
     var _uri = parseUrl(url),
-        _query = parseQuery(_uri);
+        _query = parseQuery(_uri.query);
     if (_.isString(name)) {
         addQuery(_query, name, value)
     } else if(_.isObject(name)) {
-        _each(name, function(_name, value){
+        _each(name, function( _name, value){
             addQuery(_query, _name, value)
         })
     }
