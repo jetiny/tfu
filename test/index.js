@@ -2,6 +2,7 @@ require('./unit/base');
 require('./unit/type');
 require('./unit/event');
 require('./unit/route');
+require('./unit/tmpl');
 //require('./unit/each');
 //require('./unit/extend');
 //require('./unit/hook');

@@ -9,4 +9,5 @@ _.extend(module.exports ,
 	require('./route'),			//single
     require('./event'),			//single
 	require('./hook')			//single
+    require('./tmpl')			//single
 );
