@@ -1,7 +1,7 @@
 // i18n (en + ?) 
 var _extend = require('./extend').extend;
 
-function Translate(locate, defaultLocate, paths, equal) {
+function translate(locate, defaultLocate, paths, equal) {
     var it,
         items = paths.slice();
     while(it = items.shift()) {
@@ -28,7 +28,7 @@ module.exports.tr = (function factory(){
     
     function tr(ns, key) {
         var path = key ? (ns+'.'+key) : ns,
-            r = Translate(_locates[tr.locate], _locates[tr.defaultLocate], path.split('.'), tr.defaultLocate == tr.locate);
+            r = translate(_locates[tr.locate], _locates[tr.defaultLocate], path.split('.'), tr.defaultLocate == tr.locate);
         if (r[0])
             return r[1];
         if (tr.warn) { // user warn interface

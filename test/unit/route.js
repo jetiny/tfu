@@ -19,6 +19,9 @@ describe('route', function () {
 		expect(rt.match('/a/b/')).to.be(undefined);
 		expect(rt.match('/a/b/c/d')).to.be(undefined);
 		
+        //caseInsensitive
+        expect(_.route('/a/b/c', {caseInsensitive: true}).match('/A/b/C')).to.eql({});
+        expect(_.route('/a/b/c', {caseInsensitive: false}).match('/A/b/C')).to.be(undefined);
 	});
 	
 	it('with optional variable /a/b:c?', function(){

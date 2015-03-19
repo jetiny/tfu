@@ -1,7 +1,7 @@
 var RE_REPLACE = /([().])/g,
     RE_REPLACE2  = /([\/$\*])/g,
     RE_MATCH   = /(\/)?:(\w+)([\?\*])?/g ;
-module.exports.route = function (path, opts) {
+var route = module.exports.route = function (path, opts) {
 	var _keys = [], 
 		_path = path
 		  .replace(RE_REPLACE, '\\$1')
@@ -25,7 +25,8 @@ module.exports.route = function (path, opts) {
 	if (cr != '/' && cr != '*'){
 		(_path += '(?:\\/)?') // in case no / at end
 	}
-    var _regexp = new RegExp( '^' + _path + '$' , opts.caseInsensitive ? 'i' : ''),
+    var _regexp = new RegExp( '^' + _path + '$' , 
+            opts.caseInsensitive || route.caseInsensitive ? 'i' : ''),
         rt = {
             path   : path ,          // origin path
             regexp : _regexp,        // parse url
