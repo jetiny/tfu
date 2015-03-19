@@ -41,7 +41,7 @@ function tmpl_slash(s) {
 }
 
 function tmpl(str, url) {
-    var sourceDebug = url && tmpl._debug,
+    var sourceDebug = url && tmpl.debug,
         f = 'var '+ tmplVars + "\r\n_s='';o||(o={}); with(o){_s='"
         + tmpl_replace(str || '')
         + "';}\r\nreturn _s;"
@@ -55,10 +55,6 @@ function tmpl(str, url) {
 
 tmpl.inject = function(s){
     tmplVars += s
-}
-
-tmpl.debug = function(val){
-    tmpl._debug = val;
 }
 
 module.exports.tmpl = tmpl;
