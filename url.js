@@ -70,7 +70,7 @@ function _isset(s){
     return (s != null && s != '');
 }
 
-function buildQuery( key, obj, add, _name) {
+function buildQuery( key, obj, add) {
     if ( _.isArray( obj ) ) {// Serialize array item.
         _each( obj, function( i, v ) {
             if (/\[\]$/.test( key ) ) {// scalar item
@@ -80,7 +80,7 @@ function buildQuery( key, obj, add, _name) {
             }
         });
     } else if ( _.isObject( obj )) {
-        for ( _name in obj ) {
+        for (var _name in obj ) {
             buildQuery( key + "[" + _name + "]", obj[ _name ], add );
         }
     } else {// scalar item
@@ -88,14 +88,12 @@ function buildQuery( key, obj, add, _name) {
     }
 }
 
-function addQuery(query, name, value) {
+function setQuery(query, name, value) {
     name = name.replace(/\+/g, ' ');
     if (value == null) {// same as undefined
         delete query[name];
     } else {
-        if (_.isString(value))
-            value = value.replace(/\+/g, ' ')
-        query[name] = value;
+        query[name] = String(value).replace(/\+/g, ' ');
     }
 }
 
@@ -146,10 +144,10 @@ function replaceQuery(url, name, value) {
     var _uri = parseUrl(url),
         _query = parseQuery(_uri.query);
     if (_.isString(name)) {
-        addQuery(_query, name, value)
+        setQuery(_query, name, value)
     } else if(_.isObject(name)) {
         _each(name, function( _name, value){
-            addQuery(_query, _name, value)
+            setQuery(_query, _name, value)
         })
     }
     _uri.query = toQuery(_query);
