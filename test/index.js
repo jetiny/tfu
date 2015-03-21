@@ -4,6 +4,7 @@ require('./unit/event');
 require('./unit/route');
 require('./unit/tmpl');
 require('./unit/tr');
+require('./unit/query');
 //require('./unit/each');
 //require('./unit/extend');
 //require('./unit/hook');

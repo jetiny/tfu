@@ -8,7 +8,8 @@ _.extend(module.exports ,
     require('./inherits'),        //single
     require('./route'),           //single
     require('./event'),           //single
-    require('./hook')             //single
-    require('./tmpl')             //single
+    require('./hook'),            //single
+    require('./tmpl'),            //single
+    require('./query'),           //require type each
     require('./tr')               //require extend
 );
