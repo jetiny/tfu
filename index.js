@@ -10,6 +10,7 @@ _.extend(module.exports ,
     require('./event'),           //single
     require('./hook'),            //single
     require('./tmpl'),            //single
+    require('./url'),            //single
     require('./query'),           //require type each
     require('./tr')               //require extend
 );

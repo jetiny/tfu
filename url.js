@@ -1,170 +1,37 @@
-var _ = require('./type'),
-    _each = require('./each');
-
 //jsuri https://code.google.com/r/jonhwendell-jsuri/
 
 // https://username:password@www.test.com:8080/path/index.html?this=that&some=thing#content
 var REKeys = ["source", "protocol", "authority", "userInfo", "user", "password", "host", "port", "relative", "path", "directory", "file", "query", "anchor"]
     ,URL_RE = /^(?:(?![^:@]+:[^:@\/]*@)([^:\/?#.]+):)?(?:\/\/)?((?:(([^:@]*)(?::([^:@]*))?)?@)?([^:\/?#]*)(?::(\d*))?)(((\/(?:[^?#](?![^?#\/]*\.[^?#\/.]+(?:[?#]|$)))*\/?)?([^?#\/]*))(?:\?([^#]*))?(?:#(.*))?)/
-    ,_encode = encodeURIComponent
     ;
 
-function parseUrl(str) {
-    var _uri = {},
-        _m = URL_RE.exec(str || ''),
-        _i = REKeys.length;
-    while (_i--) {
-        _uri[REKeys[_i]] = _m[_i] || "";
-    }
-    return _uri;
-}
-
-function toUrl(uri) {
-    uri || (uri = {})
-    var _str = '', _tmp;
-    if (_isset(_tmp = uri.protocol)) {
-        _str += _tmp;
-        if (_tmp.indexOf(':') != _tmp.length - 1) {
-            _str += ':';
+module.exports.Url = {
+    parse: function parseUrl(str) {
+        var _uri = {},
+            _m = URL_RE.exec(str || ''),
+            _i = REKeys.length;
+        while (_i--) {
+            _uri[REKeys[_i]] = _m[_i] || "";
         }
-        _str += '//';
-    } else if ((uri.source || '').indexOf('//') != -1 && _isset(uri.host)){
-        _str += '//';
-    }
-    if (_isset(_tmp = uri.userInfo) && _isset(uri.host)) {
-        _str += _tmp;
-        if (_tmp.indexOf('@') != _tmp.length - 1){
-            _str += '@';
-        }
-    }
-    if (_isset(uri.host)) {
-        _str += uri.host;
-        if (_isset(uri.port))
-            _str += ':' + uri.port;
-    }
-    if (_isset(uri.path)) {
-        _str += uri.path;
-    } else if (_isset(uri.host) && (_isset(uri.query) || _isset(uri.anchor))){
-        _str += '/';
-    }
-    if (_isset(uri.query)) {
-        if (_.isObject(uri.query)){
-            if (_tmp = toQuery(uri.query)){
-                _str += '?' + _tmp;
+        return _uri;
+    },
+    stringify: function toUrl(uri) {
+        var str = '';
+        if (uri) {
+            if (uri.host) {
+                uri.protocol && (str += uri.protocol + ':');
+                str += '//';
+                uri.user     && (str += uri.user + ':');
+                uri.password && (str += uri.password + '@');
+                str += uri.host;
+                uri.port && (str += ':'+ uri.port);
             }
-        } else {
-            if (uri.query.indexOf('?') != 0)
-                _str += '?';
-        }
-        _str += uri.query;
-    }
-    if (_isset(uri.anchor)) {
-        if (uri.anchor.indexOf('#') != 0)
-            _str += '#';
-        _str += uri.anchor;
-    }
-    return _str;
-}
-
-function _isset(s){
-    return (s != null && s != '');
-}
-
-function buildQuery( key, obj, add) {
-    if ( _.isArray( obj ) ) {// Serialize array item.
-        _each( obj, function( i, v ) {
-            if (/\[\]$/.test( key ) ) {// scalar item
-                add( key, v );
-            } else { // Item is non-scalar (array or object), encode its numeric index.
-                buildQuery( key + "[" + ( _.isObject(v) ? i : "" ) + "]", v, add );
+            if (uri.directory || uri.file){
+                str += (uri.directory || '/') + (uri.file || '');
             }
-        });
-    } else if ( _.isObject( obj )) {
-        for (var _name in obj ) {
-            buildQuery( key + "[" + _name + "]", obj[ _name ], add );
+            uri.query  && (str += '?'+uri.query);
+            uri.anchor && (str += '#'+uri.anchor);
         }
-    } else {// scalar item
-        add( key, obj );
+        return str;
     }
-}
-
-function setQuery(query, name, value) {
-    name = name.replace(/\+/g, ' ');
-    if (value == null) {// same as undefined
-        delete query[name];
-    } else {
-        query[name] = String(value).replace(/\+/g, ' ');
-    }
-}
-
-//parseQuery # http://stackoverflow.com/questions/1131630/the-param-inverse-function-in-javascript-jquery
-function parseQuery(str) { // a[b]=1&a[c]=2&d[]=3&d[]=4&d[2][e]=5 <=> { a: { b: 1, c: 2 }, d: [ 3, 4, { e: 5 } ] }
-    var _querys = {};
-    decodeURIComponent(str || '')
-        .replace(/\+/g, ' ')
-        // (optional no-capturing & )(key)=(value)
-        .replace(/(?:^|&)([^&=]*)=?([^&]*)/g, function ($0, _name, _value) {
-            
-            if (_name) {
-                var _path, _acc, _nextAcc, _ref;
-                (_path = []).unshift(_name = _name.replace(/\[([^\]]*)\]/g, function($0, _k) {
-                    _path.push(_k);
-                    return "";
-                }));
-                _ref = _querys;
-                for (var j=0; j<_path.length-1; j++) {
-                    _acc = _path[j];
-                    _nextAcc = _path[j+1];
-                    if (!_ref[_acc]) {
-                        _ref[_acc] = ((_nextAcc == "") || (/^[0-9]+$/.test(_nextAcc))) ? [] : {};
-                    }
-                    _ref = _ref[_acc];
-                }
-                ("" == (_acc = _path[_path.length-1])) ? _ref.push(_value) : _ref[_acc] = _value;
-            }
-        });
-    return _querys;
-}
-
-//toQuery # http://api.jquery.com/jQuery.param
-function toQuery(query) {
-    var _add = function( key, value ) {
-            // If value is a function, invoke it and return its value
-            value = _.isFunction( value ) ? value() : ( value == null ? "" : value );
-            _str[ _str.length ] = _encode( key ) + "=" + _encode( value );
-        },
-        _str = [];
-    _each(query || {},function(id, it){
-        buildQuery(id, it, _add)
-    });
-    return _str.join( "&" ).replace(/%20/g,'+');
-}
-
-function replaceQuery(url, name, value) {
-    var _uri = parseUrl(url),
-        _query = parseQuery(_uri.query);
-    if (_.isString(name)) {
-        setQuery(_query, name, value)
-    } else if(_.isObject(name)) {
-        _each(name, function( _name, value){
-            setQuery(_query, _name, value)
-        })
-    }
-    _uri.query = toQuery(_query);
-    return toUrl(_uri);
-}
-
-function isCrossUrl(url, compare) {
-    if (/^([\w-]+:)?\/\/([^\/]+)/.test(url)){
-        return RegExp.$2 != (compare || location.host)
-    }
-}
-
-module.exports = {
-    "isCrossUrl":isCrossUrl,
-    "replaceQuery":replaceQuery,
-    "toQuery":toQuery,
-    "parseQuery":parseQuery,
-    "toUrl":toUrl,
-    "parseUrl":parseUrl
 };

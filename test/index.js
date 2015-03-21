@@ -5,6 +5,7 @@ require('./unit/route');
 require('./unit/tmpl');
 require('./unit/tr');
 require('./unit/query');
+require('./unit/url');
 //require('./unit/each');
 //require('./unit/extend');
 //require('./unit/hook');
