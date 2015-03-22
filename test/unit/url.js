@@ -75,16 +75,16 @@ describe('url', function () {
             expect(item = Url.stringify(orig)).to.be(orig.source);
             expect(Url.parse(item)).to.eql(orig);
         
-        orig.directory = '/';
-            orig.path = '/';
+        orig.path = '/';
+            orig.directory = '/';
             orig.relative = '/';
             orig.source = 'https://jetiny:password@www.google.com:80/';
             expect(item = Url.stringify(orig)).to.be(orig.source);
             expect(Url.parse(item)).to.eql(orig);
         
-        orig.file = 'index.html';
+        orig.path = '/index.html';
+            orig.file = 'index.html';
             orig.relative = orig.directory + orig.file;
-            orig.path = orig.directory + orig.file;
             orig.source = 'https://jetiny:password@www.google.com:80/index.html';
             expect(item = Url.stringify(orig)).to.be(orig.source);
             expect(Url.parse(item)).to.eql(orig);

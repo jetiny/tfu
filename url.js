@@ -26,9 +26,7 @@ module.exports.Url = {
                 str += uri.host;
                 uri.port && (str += ':'+ uri.port);
             }
-            if (uri.directory || uri.file){
-                str += (uri.directory || '/') + (uri.file || '');
-            }
+            str += uri.path || '';
             uri.query  && (str += '?'+uri.query);
             uri.anchor && (str += '#'+uri.anchor);
         }
